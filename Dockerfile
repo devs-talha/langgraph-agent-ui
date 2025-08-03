@@ -14,6 +14,14 @@ WORKDIR /app
 COPY . .
 # Copy installed dependencies from previous stage
 COPY --from=deps /app/node_modules ./node_modules
+# Generate .env file for public environment variables
+RUN echo "# Public environment variables for Next.js build" > .env && \
+    echo "NEXT_PUBLIC_APP_TITLE=${NEXT_PUBLIC_APP_TITLE:-Agent Chat}" >> .env && \
+    echo "NEXT_PUBLIC_APP_DESCRIPTION=${NEXT_PUBLIC_APP_DESCRIPTION:-Agent Chat}" >> .env && \
+    echo "NEXT_PUBLIC_ALLOW_ATTACHMENTS=${NEXT_PUBLIC_ALLOW_ATTACHMENTS:-false}" >> .env && \
+    echo "NEXT_PUBLIC_GITHUB_REPO_URL=${NEXT_PUBLIC_GITHUB_REPO_URL:-https://github.com/devs-talha/langgraph-agent-ui}" >> .env && \
+    echo "NEXT_PUBLIC_PROXY_API_URL=${NEXT_PUBLIC_PROXY_API_URL:-http://localhost:3000/api}" >> .env && \
+    echo "NEXT_PUBLIC_ASSISTANT_ID=${NEXT_PUBLIC_ASSISTANT_ID:-agent}" >> .env
 # Build the Next.js app (outputs to .next/)
 RUN npm run build
 
